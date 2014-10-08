@@ -1,9 +1,11 @@
+import os
+import csv
 import functools
 
 import requests
 from bs4 import BeautifulSoup
-import csv
 
+DATA_DIR = 'phr-data'
 phr_base_url = 'http://phr.org.il/'
 wanted_number_of_articles = 2
 wanted_pages = [5, 7, 8, 9, 10, 361]  # relevant page numbers - check the links on website
@@ -82,7 +84,7 @@ def save_to_csv(page, department_from_title, articles):
     :param articles: a dictionary of dictionaries.
     :return: nothing
     '''
-    with open(file='./phr-data/test_{}{}'.format(page, '.csv'), mode='w', encoding='utf-8') as csvfile:
+    with open(os.path.join(DATA_DIR, 'test_{}.csv'.format(page)), mode='w', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile, delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
@@ -103,6 +105,9 @@ def save_to_csv(page, department_from_title, articles):
 
 
 if __name__ == '__main__':
+    # create data dir if not exists
+    if not (os.path.exists(DATA_DIR) and os.path.isdir(DATA_DIR)):
+        os.makedirs(DATA_DIR)
     for page in wanted_pages:
         department_from_title, titles, dates, links = scrape_department_page(page)
         articles = scrape_articles_data(titles, dates, links)
