@@ -104,7 +104,7 @@ def save_to_csv(page, department_from_title, articles):
         print("Done saving page {}'s articles: {}".format(page, department_from_title))
 
 
-if __name__ == '__main__':
+def main():
     # create data dir if not exists
     if not (os.path.exists(DATA_DIR) and os.path.isdir(DATA_DIR)):
         os.makedirs(DATA_DIR)
@@ -114,3 +114,7 @@ if __name__ == '__main__':
         save_to_csv(page, department_from_title, articles)
 
     print('Finished running script! check your CSV files...')
+
+
+if __name__ == '__main__':
+    main()
