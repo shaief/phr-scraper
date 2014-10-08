@@ -1,3 +1,5 @@
+import functools
+
 import requests
 from bs4 import BeautifulSoup
 import csv
@@ -7,6 +9,24 @@ wanted_number_of_articles = 2
 wanted_pages = [5, 7, 8, 9, 10, 361]  # relevant page numbers - check the links on website
 
 header = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:32.0) Gecko/20100101 Firefox/32.0', }
+
+
+# on windows one can't print unicode to the terminal.
+# just warn the user in this case, and ignore future UnicodeEncodeErrors
+def make_print_safer(print_func):
+    unicode_exception_occured = [False]
+    functools.wraps(print_func)
+    def wrapper(s):
+        try:
+            print_func(s)
+        except UnicodeEncodeError:
+            if not unicode_exception_occured[0]:
+                import warnings
+                warnings.warn("This terminal doesn't support unicode (aka Hebrew)", UserWarning)
+            unicode_exception_occured[0] = True
+    return wrapper
+
+print = make_print_safer(print)
 
 
 def scrape_department_page(page):
